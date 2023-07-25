@@ -10,8 +10,4 @@
     <ProjectReference Include="..\EmployeeTracking.Core\EmployeeTracking.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="EmailService\" />
-  </ItemGroup>
-
 </Project>

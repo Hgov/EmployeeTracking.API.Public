@@ -1,7 +1,7 @@
 ﻿using EmployeeTracking.Core.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace EmployeeTracking.Core.IdentitySettings.Validators
+namespace EmployeeTracking.Infrastructure.IdentitySettings.Validators
 {
     public class UserValidator : IUserValidator<User>
     {

@@ -1,12 +1,7 @@
 ﻿using EmployeeTracking.Core.Entities;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EmployeeTracking.Core.IdentitySettings.Validators
+namespace EmployeeTracking.Infrastructure.IdentitySettings.Validators
 {
     public class PasswordValidator : IPasswordValidator<User>
     {

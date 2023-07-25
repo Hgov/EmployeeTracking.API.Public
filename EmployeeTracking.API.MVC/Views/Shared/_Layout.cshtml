@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using EmployeeTracking.Core.Entities;
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,8 +26,36 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Users">Users</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Roles">Roles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Profile">Profile</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse" id="collapsibleNavbar">
+                    <ul class="navbar-nav ml-auto">
+                        @*If the user is signed-in display Logout link*@
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <form method="post" asp-controller="account" asp-action="logout">
+                                    <button type="submit" style="width:auto" asp-controller="User" asp-action="Logout"
+                                        class="nav-link btn btn-link py-0">
+                                        Logout @User.Identity.Name 
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

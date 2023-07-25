@@ -2,7 +2,6 @@
 using EmployeeTracking.Core.EmailService;
 using EmployeeTracking.Core.Entities;
 using EmployeeTracking.Core.Entities.DataTransferObjects;
-using EmployeeTracking.Core.LoggerManager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,18 +14,19 @@ using static EmployeeTracking.Core.Entities.Enums;
 
 namespace EmployeeTracking.API.MVC.Controllers
 {
-    [Authorize(Roles = "admin")]
+
     public class AdminController : BaseService
     {
-        public AdminController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, ILoggerManager loggerManager, IMapper mapper, IActionContextAccessor actionContextAccessor, IUrlHelperFactory urlHelperFactory, EmailHelper emailHelper) : base(userManager, roleManager, signInManager, loggerManager, mapper, actionContextAccessor, urlHelperFactory, emailHelper)
+        public AdminController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IMapper mapper, IActionContextAccessor actionContextAccessor, IUrlHelperFactory urlHelperFactory, EmailHelper emailHelper) : base(userManager, roleManager, signInManager, mapper, actionContextAccessor, urlHelperFactory, emailHelper)
         {
 
         }
         public IActionResult Index() => View();
-        public async Task<IActionResult> Users() => View(await _userManager.Users.ToListAsync());
-        
-        public async Task<IActionResult> Roles() => View(await _roleManager.Roles.ToListAsync());
 
+        public async Task<IActionResult> Users() => View(await _userManager.Users.ToListAsync());
+
+        public async Task<IActionResult> Roles() => View(await _roleManager.Roles.ToListAsync());
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpsertRole(string? id)
         {
             if (id != null)
@@ -36,7 +36,7 @@ namespace EmployeeTracking.API.MVC.Controllers
             }
             return View(new UpsertRoleModel());
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> UpsertRole(UpsertRoleModel viewModel)
         {
@@ -44,7 +44,7 @@ namespace EmployeeTracking.API.MVC.Controllers
             {
                 var isUpdate = viewModel.Id != null;
 
-                var role = isUpdate ? await _roleManager.FindByIdAsync(viewModel.Id) : new Role() { Name = viewModel.Name};
+                var role = isUpdate ? await _roleManager.FindByIdAsync(viewModel.Id) : new Role() { Name = viewModel.Name };
 
                 if (isUpdate)
                 {
@@ -60,7 +60,7 @@ namespace EmployeeTracking.API.MVC.Controllers
             }
             return View(viewModel);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> DeleteRole(string id)
         {
@@ -79,7 +79,6 @@ namespace EmployeeTracking.API.MVC.Controllers
             }
             return RedirectToAction("Roles");
         }
-
         public async Task<IActionResult> EditUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -106,7 +105,6 @@ namespace EmployeeTracking.API.MVC.Controllers
 
             return View(userModel);
         }
-
         [HttpPost]
         public async Task<IActionResult> EditUser(EditUserModel editUserModel)
         {

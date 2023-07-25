@@ -1,11 +1,6 @@
 ﻿using EmployeeTracking.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeTracking.Core.Helpers
 {
@@ -15,5 +10,5 @@ namespace EmployeeTracking.Core.Helpers
         //public DbSet<Employee> Employees { get; set; }
         //public DbSet<Department> Departments { get; set; }
     }
-   
+
 }

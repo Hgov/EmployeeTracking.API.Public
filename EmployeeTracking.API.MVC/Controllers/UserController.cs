@@ -2,7 +2,7 @@
 using EmployeeTracking.Core.EmailService;
 using EmployeeTracking.Core.Entities;
 using EmployeeTracking.Core.Entities.DataTransferObjects;
-using EmployeeTracking.Core.LoggerManager;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -12,7 +12,7 @@ namespace EmployeeTracking.API.MVC.Controllers
 {
     public class UserController : BaseService
     {
-        public UserController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, ILoggerManager loggerManager, IMapper mapper, IActionContextAccessor actionContextAccessor, IUrlHelperFactory urlHelperFactory, EmailHelper emailHelper) : base(userManager, roleManager, signInManager, loggerManager, mapper, actionContextAccessor, urlHelperFactory, emailHelper)
+        public UserController(UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager, IMapper mapper, IActionContextAccessor actionContextAccessor, IUrlHelperFactory urlHelperFactory, EmailHelper emailHelper) : base(userManager, roleManager, signInManager, mapper, actionContextAccessor, urlHelperFactory, emailHelper)
         {
 
         }
@@ -80,7 +80,7 @@ namespace EmployeeTracking.API.MVC.Controllers
                         {
                             return Redirect(returnUrl.ToString() ?? "/");
                         }
-                        return RedirectToAction("Index", "Admin");
+                        return RedirectToAction("Profile", "User");
                     }
                     else if (result.IsLockedOut)
                     {
@@ -119,8 +119,12 @@ namespace EmployeeTracking.API.MVC.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public async Task Logout() => await _signInManager.SignOutAsync();
-
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        [Authorize(Roles = "admin,user")]
         public async Task<IActionResult> Profile()
         {
             var user = await _userManager.FindByNameAsync(User.Identity?.Name);
@@ -137,19 +141,19 @@ namespace EmployeeTracking.API.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var me = await _userManager.FindByNameAsync(User.Identity?.Name);
-                if (me != null)
+                var user = await _userManager.FindByNameAsync(User.Identity?.Name);
+                if (user != null)
                 {
 
-                    me.UserName = updateProfileModel.UserName;
-                    me.Email = updateProfileModel.Email;
+                    user.UserName = updateProfileModel.UserName;
+                    user.Email = updateProfileModel.Email;
 
-                    var result = await _userManager.UpdateAsync(me);
+                    var result = await _userManager.UpdateAsync(user);
                     if (result.Succeeded)
                     {
-                        await _userManager.UpdateSecurityStampAsync(me);
+                        await _userManager.UpdateSecurityStampAsync(user);
                         await _signInManager.SignOutAsync();
-                        await _signInManager.SignInAsync(me, true);
+                        await _signInManager.SignInAsync(user, true);
 
                         return RedirectToAction("Index", "Admin");
                     }

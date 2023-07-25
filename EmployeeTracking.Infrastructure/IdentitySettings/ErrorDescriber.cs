@@ -1,11 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace EmployeeTracking.Core.IdentitySettings
+namespace EmployeeTracking.Infrastructure.IdentitySettings
 {
     public class ErrorDescriber : IdentityErrorDescriber
     {

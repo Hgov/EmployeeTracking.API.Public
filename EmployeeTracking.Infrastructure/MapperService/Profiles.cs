@@ -2,9 +2,9 @@
 using EmployeeTracking.Core.Entities;
 using EmployeeTracking.Core.Entities.DataTransferObjects;
 
-namespace EmployeeTracking.Core.MapperService
+namespace EmployeeTracking.Infrastructure.MapperService
 {
-    public class Profiles:Profile
+    public class Profiles : Profile
     {
         public Profiles()
         {
@@ -12,6 +12,7 @@ namespace EmployeeTracking.Core.MapperService
 
             CreateMap<Role, UpsertRoleModel>();
             CreateMap<User, EditUserModel>();
+            CreateMap<User, UpdateProfileModel>();
         }
     }
 }

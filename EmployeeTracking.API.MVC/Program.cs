@@ -1,18 +1,14 @@
 using EmployeeTracking.Core.EmailService;
 using EmployeeTracking.Core.Entities;
 using EmployeeTracking.Core.Helpers;
-using EmployeeTracking.Core.IdentitySettings.Validators;
-using EmployeeTracking.Core.LoggerManager;
-using EmployeeTracking.Core.MapperService;
-using EmployeeTracking.Infrastructure.LoggerManager;
+using EmployeeTracking.Infrastructure.IdentitySettings.Validators;
+using EmployeeTracking.Infrastructure.MapperService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using NLog;
 using Swashbuckle.AspNetCore.SwaggerUI;
-using System.Configuration;
-using System.Runtime;
 using static EmployeeTracking.Core.Entities.Enums;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,7 +39,6 @@ builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 builder.Services.AddScoped<EmailHelper>();
 LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/Configurations/nlog.config"));
-builder.Services.AddScoped<ILoggerManager, LoggerManager>();
 builder.Services.AddAutoMapper(typeof(Profiles));
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -70,20 +65,20 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization(options =>
 {
-    //options.AddPolicy("HrDepartmentPolicy", policy =>
-    //{
-    //    policy.RequireClaim("Department", Enum.GetName(Department.HR)!);
-    //});
+    options.AddPolicy("HrDepartmentPolicy", policy =>
+    {
+        policy.RequireClaim("Department", Enum.GetName(Department.HR)!);
+    });
 
-    //options.AddPolicy("SoftwareDepartmentPolicy", policy =>
-    //{
-    //    policy.RequireClaim("Department", Enum.GetName(Department.Software)!);
-    //});
+    options.AddPolicy("SoftwareDepartmentPolicy", policy =>
+    {
+        policy.RequireClaim("Department", Enum.GetName(Department.Software)!);
+    });
 
-    //options.AddPolicy("EmployeePolicy", policy =>
-    //{
-    //    policy.RequireClaim("Department", Enum.GetNames<Department>());
-    //});
+    options.AddPolicy("EmployeePolicy", policy =>
+    {
+        policy.RequireClaim("Department", Enum.GetNames<Department>());
+    });
 });
 
 var app = builder.Build();
